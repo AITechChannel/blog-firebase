@@ -1,3 +1,4 @@
+import Dashboard from "../components/pages/Dashboard";
 import ErrorPage from "../components/pages/ErrorPage";
 
 import Home from "../components/pages/Home";
@@ -21,6 +22,10 @@ const router = [
   {
     element: <Login />,
     path: "/login",
+  },
+  {
+    element: <Dashboard />,
+    path: "/dashboard",
   },
 ];
 
