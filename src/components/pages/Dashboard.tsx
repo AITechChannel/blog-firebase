@@ -11,6 +11,7 @@ import {
   addDoc,
   doc,
   setDoc,
+  getDoc,
 } from "firebase/firestore";
 import MainLayout from "../layouts/MainLayout";
 
@@ -19,14 +20,13 @@ function Dashboard() {
   const [name, setName] = useState("");
   const navigate = useNavigate();
 
-  console.log(user);
-
   const fetchUserName = async () => {
     if (!user?.uid) return;
     try {
       const q = query(collection(db, "users"), where("uid", "==", user?.uid));
       const doc = await getDocs(q);
       const data = doc.docs[0].data();
+      console.log("🚀 ::::: fetchUserName ::::: data", data);
       setName(data.name);
       console.log(doc.docs[0].data());
     } catch (err) {
@@ -35,32 +35,54 @@ function Dashboard() {
     }
   };
 
-  const addTodo = async () => {
+  // const addTodo = async () => {
+  //   try {
+  //     const docRef = await addDoc(collection(db, "todos"), {
+  //       todo: "test todo",
+  //     });
+  //     console.log("Document written with ID: ", docRef.id);
+  //   } catch (e) {
+  //     console.error("Error adding document: ", e);
+  //   }
+  // };
+
+  // const getDocsId = async () => {
+  //   try {
+  //     const querySnapshot = await getDocs(collection(db, "users"));
+  //     querySnapshot.forEach((doc) => {
+  //       console.log(`${doc.id} => ${doc.data()}`);
+  //     });
+  //   } catch (e) {
+  //     console.error("Error adding document: ", e);
+  //   }
+  // };
+
+  // const setDocId = async () => {
+  //   try {
+  //     await setDoc(doc(db, "todos", "test"), { test: "abc" });
+  //     //   console.log("res", response);
+  //   } catch (e) {
+  //     console.error("Error adding document: ", e);
+  //   }
+  // };
+
+  const addPost = async () => {
     try {
-      const docRef = await addDoc(collection(db, "todos"), {
-        todo: "test todo",
+      const postRef = await addDoc(collection(db, "posts"), {
+        id: user?.uid,
+        title: "Tuan Anh Doan post",
       });
-      console.log("Document written with ID: ", docRef.id);
+      console.log("Document written with ID: ", postRef);
     } catch (e) {
       console.error("Error adding document: ", e);
     }
   };
 
-  const getDocsId = async () => {
+  const getPost = async () => {
     try {
-      const querySnapshot = await getDocs(collection(db, "users"));
-      querySnapshot.forEach((doc) => {
-        console.log(`${doc.id} => ${doc.data()}`);
-      });
-    } catch (e) {
-      console.error("Error adding document: ", e);
-    }
-  };
-
-  const setDocId = async () => {
-    try {
-      await setDoc(doc(db, "todos", "test"), { test: "abc" });
-      //   console.log("res", response);
+      const docRef = doc(db, "users", "1E8bozbwqudemrT7amcw");
+      const docSnap = await getDoc(docRef);
+      console.log("Document written with ID: ", docSnap.data());
     } catch (e) {
       console.error("Error adding document: ", e);
     }
@@ -73,7 +95,7 @@ function Dashboard() {
     fetchUserName();
     // addTodo();
     // getDocsId();
-    setDocId();
+    // setDocId();
   }, [user, loading]);
 
   return (
@@ -87,7 +109,13 @@ function Dashboard() {
     //     </button>
     //   </div>
     // </div>
-    <MainLayout>dashboard</MainLayout>
+    <MainLayout>
+      <button className="bg-red" onClick={() => addPost()}>
+        Add post
+      </button>
+      {/* <button onClick={() => get()}>getDocs</button> */}
+      <button onClick={logout}>Logout</button>
+    </MainLayout>
   );
 }
 
